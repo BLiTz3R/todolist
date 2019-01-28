@@ -63,12 +63,10 @@ changeTodoButton.addEventListener('click', function() {
 });
 
 // Delete button
-var deleteTodoButton = document.getElementById('deleteTodoButton');
-deleteTodoButton.addEventListener('click', function() {
-  todoList.deleteTodo(deleteTodoPositionInput.valueAsNumber);
-  deleteTodoPositionInput.value = '';
+var deleteTodo = function(position) {
+  todoList.deleteTodo(position);
   view.displayTodos();
-});
+};
 
 // Toggle Completed button
 var toggleCompletedButton = document.getElementById('toggleCompletedButton');
@@ -101,8 +99,34 @@ var view = {
         todoTextWithCompletion = '( ) ' + todo.todoText;
       }
 
+      todoLi.id = i;
       todoLi.textContent = todoTextWithCompletion;
+      todoLi.appendChild(this.createDeleteButton());
       todosUl.appendChild(todoLi);
     }
+  },
+  createDeleteButton: function() {
+    var deleteButton = document.createElement('button');
+    deleteButton.textContent = "Delete";
+    deleteButton.className = 'deleteButton';
+    return deleteButton;
+  },
+  setupEventListeners: function() {
+    var todosUl = document.querySelector('ul');
+
+    todosUl.addEventListener('click', function(event) {
+      event.target.parentNode.id
+
+      // Get the element that was clicked on.
+      var elementClicked = event.target;
+
+      // Check if elementClicked is a delete button.
+      if (elementClicked.className === 'deleteButton') {
+        // Run deleteTodo to elementClicked with appropriate id, parseInt to transform string to number.
+        deleteTodo(parseInt(elementClicked.parentNode.id));
+      }
+    });
   }
 };
+
+view.setupEventListeners();
